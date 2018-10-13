@@ -50,26 +50,37 @@ type(cali_table)
 cali_dict = {}
 cali_list_of_lists = []
 index = 0
-'''for row in cali_table[0].find_all('tr'):
-    cali_dict[index] = index
-    index+=1
+'''
+for row in cali_table[0].find_all('tr'):
     holder_row = []
     for column in row.find_all('td'):
-        holder_row.append(column)
+        #holder_row.append(column)
+        #holder_row.append(column.text)
+        try:
+            holder_row.append(column.find('span').text)
+        except (TypeError,AttributeError):
+            pass
     cali_list_of_lists.append(holder_row)
 '''
 
+# https://stackoverflow.com/questions/19595296/whats-the-correct-try-exception-for-nonetype-when-using-regexs-groups-funct
+# This is because some of the closed locations don't have an address, so there is no span in the first column
 for row in cali_table[0].find_all('tr'):
     cali_dict[index] = index
     index+=1
     holder_row = []
     for n, column in enumerate(row.find_all('td')):
-        holder_row.append((n,column))
-
-
+        #holder_row.append((n, column))
+        holder_row.append(column.text)
+        #holder_row.append(column.find('span'))
+        if n == 0:
+            try:
+                holder_row.append(column.find('span'))
+                holder_row.append(column.find('span').text)
+            except (TypeError,AttributeError):
+                pass
     cali_list_of_lists.append(holder_row)
-    #for column in row
-#print(cali_list_of_lists[1])
+print(cali_list_of_lists[1])
 #print(cali_list_of_lists[0].find_all('span'))
 '''
 table_rows = cali_table[0].find_all('tr') # note that this is also a list with one element
